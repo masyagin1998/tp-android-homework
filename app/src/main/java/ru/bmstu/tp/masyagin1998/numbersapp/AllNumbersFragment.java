@@ -32,9 +32,13 @@ public class AllNumbersFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setRetainInstance(true);
+        // setRetainInstance(true);
 
-        current_max_number = START_MAX_NUMBER;
+        if (savedInstanceState != null) {
+            current_max_number = savedInstanceState.getInt("currMaxNum", START_MAX_NUMBER);
+        } else {
+            current_max_number = START_MAX_NUMBER;
+        }
 
         LinkedList<Integer> numbers = new LinkedList<>();
         fillList(numbers);
@@ -61,6 +65,13 @@ public class AllNumbersFragment extends Fragment {
                 });
         return v;
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currMaxNum", current_max_number);
+    }
+
 
     private void fillList(List<Integer> numbers) {
         for (int i = START_MIN_NUMBER; i <= current_max_number; i++) numbers.add(i);
@@ -125,6 +136,7 @@ public class AllNumbersFragment extends Fragment {
         }
 
         void addNumber() {
+            current_max_number++;
             if (numbers.size() > 0) numbers.add(numbers.get(numbers.size() - 1) + 1);
             else numbers.add(START_MIN_NUMBER);
             numbersAdapter.notifyItemInserted(numbers.size() - 1);
